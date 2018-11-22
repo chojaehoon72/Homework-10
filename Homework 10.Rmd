@@ -1,0 +1,54 @@
+---
+title: "Homework 10"
+author: "Jae Hoon Cho"
+date: "November 21, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Write a function that calculates cumulative distribution function of a binomial random variable. Compare results from your function with pbinom() function.
+
+```{r}
+pbinom_man <- function (x,n,p) {
+    prob_total <-0
+    prob_binom <- 0
+  for (i in (0:x)) {
+    prob_binom <- (factorial(n) / (factorial(i)*factorial(n-i))) * p^i * (1-p)^(n-i)
+    prob_total <- prob_total + prob_binom
+  }
+    return(prob_total)
+}
+
+pbinom(3,10,0.3)
+pbinom_man(3,10,0.3)
+```
+
+2. Write a function that runs simulations to obtain power from a one-sample t-test. Run your function (with number of simulations = 10,000 ) with n = 30, delta = 0.5, sd = 1 and sig.level = 0.05. Compare
+your results with power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = 0.05, type = ‘one.sample’).
+
+```{r}
+power_t <- function(n,delta,sd,sig.level) {
+  total_t <- c(NA)
+  length(total_t) <- 10000
+  for (i in 1:10000) {
+  mean_t <- mean(rt(n,n-1)*sd + delta)
+  total_t[i] <- mean_t 
+  }
+  return(sum(total_t*sqrt(n)/sd > (qt(1-(sig.level/2),n-1)))/10000)
+}
+
+power_t(n = 30, delta = 0.5, sd = 1, sig.level = 0.05)
+
+power.t.test(n = 30, delta = 0.5, sd = 1, sig.level = 0.05, type = "one.sample")
+```
+
+
+
+
+
+
+
+
